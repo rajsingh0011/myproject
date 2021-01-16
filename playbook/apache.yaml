@@ -1,0 +1,13 @@
+---
+- name: Add Node config
+  hosts: node1
+  become: yes
+  tasks:
+    - name: ensure apache2 is present
+      apt:
+        name: apache2
+        state: present
+    - name: ensure apache2 is running
+      service:
+        name: apache2
+        state: started

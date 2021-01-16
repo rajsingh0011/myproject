@@ -1,0 +1,37 @@
+---
+- name: Add Node config
+  hosts: node1
+  become: yes
+  vars:
+    key : $6$teF3w7qrqu$k4TppLAXmKiOhTtqCVBAwKoSHilXX3b6d6Zl8qGjRi9RKwPSUiRsHDKKuxtajtmJft07ZgPo6I.jF0XUVDB2J0
+  tasks:
+    - name: To Add new user
+      user:
+        name: ansadmin
+        comment: "ansadmin"
+        create_home: yes
+        uid: 1020
+        shell: /bin/bash
+        password: '{{ key }}'
+    - name: Add host to localdns
+      lineinfile:
+        path: /etc/hosts
+        line: 192.168.56.41  node1
+    - name: Add controller to localdns
+      lineinfile:
+        path: /etc/hosts
+        line: 192.168.56.40  controller
+    - name: make ansadmin with sudo privilages
+      lineinfile:
+        path: /etc/sudoers
+        line: 'ansadmin ALL=(ALL) NOPASSWD: ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+    - name: To set python version 3
+      lineinfile:
+        path: ~/.bashrc
+        line: alias python=python3
+    - name: Set python3
+      shell: source ~/.bashrc
+      args:
+        executable: /bin/bash
+

@@ -1,0 +1,58 @@
+---
+- name: Add controller config
+  hosts: controller
+  become: yes
+  vars:
+    key : $6$Vlzoi4w2dPRI$llaVI3cN91K.XiWjYUAReu3xsf64dKSlwaMpkY2xi8HrvnsJGh1ZB5Zf8NmrjIOxJo6OJYNAG2qZA8.6JpMSp.
+  tasks:
+    - name: Add contoller in localdns
+      lineinfile:
+        path: /etc/hosts
+        line: 192.168.56.40  controller
+    - name: Add host in localdns
+      lineinfile:
+        path: /etc/hosts
+        line: 192.168.56.41  node1
+    - name: To Add new user
+      user:
+        name: ansadmin
+        comment: "ansadmin"
+        create_home: yes
+        uid: 1020
+        shell: /bin/bash
+        password: "{{ key }}" 
+    - name: make ansadmin with sudo privilages
+      lineinfile:
+        path: /etc/sudoers
+        line: 'ansadmin ALL=(ALL) NOPASSWD: ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+    - name: Create a 2048-bit SSH key for user ansadmin
+      user:
+        name: ansadmin
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa
+    - name: ensure expect is present
+      apt:
+        name: expect
+        state: present
+
+    - name: Create a 2048-bit SSH key for user vagrant
+      user:
+        name: vagrant
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa
+
+    - name: To set python version 3
+      lineinfile:
+        path: ~/.bashrc
+        line: alias python=python3
+    - name: Set python3
+      shell: source ~/.bashrc
+      args:
+        executable: /bin/bash
+
+    
+
+        
