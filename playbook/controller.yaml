@@ -2,8 +2,6 @@
 - name: Add controller config
   hosts: controller
   become: yes
-  vars:
-    key : $6$Vlzoi4w2dPRI$llaVI3cN91K.XiWjYUAReu3xsf64dKSlwaMpkY2xi8HrvnsJGh1ZB5Zf8NmrjIOxJo6OJYNAG2qZA8.6JpMSp.
   tasks:
     - name: Add contoller in localdns
       lineinfile:
@@ -20,7 +18,7 @@
         create_home: yes
         uid: 1020
         shell: /bin/bash
-        password: "{{ key }}" 
+        
     - name: make ansadmin with sudo privilages
       lineinfile:
         path: /etc/sudoers
